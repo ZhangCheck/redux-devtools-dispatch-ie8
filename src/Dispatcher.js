@@ -90,12 +90,12 @@ export default class Dispatcher extends Component {
   }
 
   handleArg(e, argIndex) {
-    const args = [
-      ...this.state.args.slice(0, argIndex),
-      this.refs['arg' + argIndex].textContent||this.refs['arg' + argIndex].innerHTML,
-      ...this.state.args.slice(argIndex + 1),
-    ];
-    this.setState({args});
+        const args = [
+          ...this.state.args.slice(0, argIndex),
+          this.refs['arg' + argIndex].textContent||this.refs['arg' + argIndex].innerHTML,
+          ...this.state.args.slice(argIndex + 1),
+        ];
+        this.setState({args});
   }
 
   launchAction() {
@@ -204,7 +204,8 @@ export default class Dispatcher extends Component {
       fields = this.getSelectedActionCreator().args.map((param, i) => (
         <div key={i} style={{display: 'flex'}}>
           <span style={fieldStyles}>{param}</span>
-          <div contentEditable style={contentEditableStyle} ref={'arg' + i} onInput={(e) => this.handleArg(e, i)} />
+          <div contentEditable style={contentEditableStyle} ref={'arg' + i} onBlur={(e) => this.handleArg(e, i)} />
+          
         </div>
       ));
       fields.push(
