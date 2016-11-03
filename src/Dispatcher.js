@@ -77,6 +77,8 @@ export default class Dispatcher extends Component {
   }
 
   selectActionCreator(e) {
+    if(e.target.nodeName!="SELECT") return;
+    
     const selectedActionCreator = e.target.value;
     let args = [];
     if(selectedActionCreator !== 'default') {
@@ -89,7 +91,7 @@ export default class Dispatcher extends Component {
     });
   }
 
-  handleArg(e, argIndex) {
+  handleArg(argIndex) {
         const args = [
           ...this.state.args.slice(0, argIndex),
           this.refs['arg' + argIndex].textContent||this.refs['arg' + argIndex].innerHTML,
@@ -100,6 +102,10 @@ export default class Dispatcher extends Component {
 
   launchAction() {
     try {
+        this.getSelectedActionCreator().args.map((el,i)=>{
+            this.handleArg(i);
+        })
+        
       let actionCreator = () => ({}), argsToInject = [];
       if(this.state.selectedActionCreator !== 'default') {
         actionCreator = this.getSelectedActionCreator().func;
@@ -201,12 +207,16 @@ export default class Dispatcher extends Component {
     let fields = <div contentEditable style={contentEditableStyle} ref='action'></div>;
     if(this.state.selectedActionCreator !== 'default') {
       const fieldStyles = {...styles.label, color: theme.base06};
-      fields = this.getSelectedActionCreator().args.map((param, i) => (
-        <div key={i} style={{display: 'flex'}}>
-          <span style={fieldStyles}>{param}</span>
-          <div contentEditable style={contentEditableStyle} ref={'arg' + i} onBlur={(e) => this.handleArg(e, i)} />
-          
-        </div>
+      const that = this;
+      fields = []
+      this.getSelectedActionCreator().args.map((param, i) => (
+        fields.push(
+            <div key={i} style={{display: 'flex'}}>
+              <span style={fieldStyles}>{param}</span>
+              <div contentEditable style={contentEditableStyle} ref={'arg' + i} />
+              
+            </div>
+        )
       ));
       fields.push(
         <div key="action" style={{display: 'flex'}}>
@@ -240,22 +250,24 @@ export default class Dispatcher extends Component {
     }
 
     const dispatchButton = <button style={dispatchButtonStyle} onClick={this.launchAction.bind(this)}>Dispatch</button>;
-
+//
     return (
-      <div style={{background: theme.base02, fontFamily: 'monaco,Consolas,Lucida Console,monospace', position: 'relative'}}>
+      <div onClick={this.selectActionCreator.bind(this)} style={{background: theme.base02, fontFamily: 'monaco,Consolas,Lucida Console,monospace', position: 'relative'}}>
         {error}
         {fields}
-        {actionCreators.length > 0 ? <div style={{display: 'flex'}}>
-          <select onChange={this.selectActionCreator.bind(this)} style={{flex: '1', fontFamily: 'inherit'}} defaultValue={this.state.selectedActionCreator || 'default'}>
-            <option value="default">Custom action</option>
-            {actionCreators.map(({ name, func, args }, i) => (
-              <option key={i} value={i}>
-                {name + '(' + args.join(', ') + ')'}
-              </option>
-            ))}
-          </select>
-          {dispatchButton}
-        </div> : dispatchButton}
+        {
+            actionCreators.length > 0 ? <div style={{display: 'flex'}}>
+                                          <select style={{flex: '1', fontFamily: 'inherit'}} defaultValue={this.state.selectedActionCreator || 'default'}>
+                                            <option value="default">Custom action</option>
+                                            {actionCreators.map(({ name, func, args }, i) => (
+                                              <option key={i} value={i}>
+                                                {name + '(' + args.join(', ') + ')'}
+                                              </option>
+                                            ))}
+                                          </select>
+                                          {dispatchButton}
+                                        </div> : dispatchButton
+        }
       </div>
     );
   }

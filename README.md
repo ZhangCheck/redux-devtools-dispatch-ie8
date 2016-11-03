@@ -54,10 +54,10 @@ You can also use `<MultipleMonitors>` from [`redux-devtools-multiple-monitors`](
 ```jsx
 import React from 'react';
 
-import { createDevTools } from 'redux-devtools';
-import LogMonitor from 'redux-devtools-log-monitor';
-import DockMonitor from 'redux-devtools-dock-monitor';
-import Dispatcher from 'redux-devtools-dispatch';
+import { createDevTools } from 'redux-devtools-ie8';
+import LogMonitor from 'redux-devtools-log-monitor-ie8';
+import DockMonitor from 'redux-devtools-dock-monitor-ie8-zck';
+import Dispatcher from 'redux-devtools-dispatch-ie8';
 import MultipleMonitors from 'redux-devtools-multiple-monitors';
 
 export default createDevTools(
