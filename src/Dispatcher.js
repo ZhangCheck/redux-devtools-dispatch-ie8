@@ -98,28 +98,30 @@ export default class Dispatcher extends Component {
           ...this.state.args.slice(argIndex + 1),
         ];
         this.setState({args});
+        return args;
   }
 
   launchAction() {
     try {
-        this.getSelectedActionCreator().args.map((el,i)=>{
-            this.handleArg(i);
-        })
+       let args = this.state.args;
+       this.getSelectedActionCreator().args.map((el,i)=>{
+            args = this.handleArg(i);
+       })
         
-      let actionCreator = () => ({}), argsToInject = [];
-      if(this.state.selectedActionCreator !== 'default') {
-        actionCreator = this.getSelectedActionCreator().func;
+       let actionCreator = () => ({}), argsToInject = [];
+       if(this.state.selectedActionCreator !== 'default') {
+            actionCreator = this.getSelectedActionCreator().func;
 
-        const interpretArg = (arg) => (new Function('return ' + arg))()
-        argsToInject = this.state.args.map(interpretArg);
-        const rest = interpretArg(this.refs.restArgs.textContent||this.refs.restArgs.innerText);
-        if(rest) {
-          if(Array.isArray(rest))
-            argsToInject = argsToInject.concat(...rest);
-          else
-            throw new Error('rest must be an array');
-        }
-      } else {
+            const interpretArg = (arg) => (new Function('return ' + arg))()
+            argsToInject = args.map(interpretArg);
+            const rest = interpretArg(this.refs.restArgs.textContent||this.refs.restArgs.innerText);
+            if(rest) {
+              if(Array.isArray(rest))
+                argsToInject = argsToInject.concat(...rest);
+              else
+                throw new Error('rest must be an array');
+            }
+       } else {
         //actionCreator = new Function('return '+ '"good"');
         
         actionCreator = eval(`(function(){ 
@@ -253,6 +255,7 @@ export default class Dispatcher extends Component {
 //
     return (
       <div onClick={this.selectActionCreator.bind(this)} style={{background: theme.base02, fontFamily: 'monaco,Consolas,Lucida Console,monospace', position: 'relative'}}>
+        <h4>{this.props.title|"Action Test"}</h4>
         {error}
         {fields}
         {
