@@ -1,6 +1,6 @@
 {
   "name": "redux-devtools-dispatch-ie8",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "description": "Dispatch your actions manually to test if your app reacts well",
   "main": "lib/index.js",
   "scripts": {
